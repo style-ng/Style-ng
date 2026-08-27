@@ -242,7 +242,7 @@ export default function PublicSite() {
   };
 
   return (
-    <>
+    <div className="public-site">
 
 
 
@@ -787,6 +787,6 @@ export default function PublicSite() {
     <div id="toast" className={toast.visible ? 'show' : ''}>{toast.msg}</div>
 
 
-    </>
+    </div>
   );
 }
