@@ -678,13 +678,39 @@ const ProductModal = ({
     active: true
   };
   const [form, setForm] = useState(product || blank);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const fileInputRef = useRef(null);
   useEffect(() => {
     setForm(product || blank);
+    setUploadError("");
   }, [product]);
   const set = (k, v) => setForm(f => ({
     ...f,
     [k]: v
   }));
+  const handlePhotoFile = async e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError("");
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const safeName = (form.name || "product").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "product";
+    const path = `${safeName}-${Date.now()}.${ext}`;
+    const { error: upErr } = await db.storage.from("product-photos").upload(path, file, {
+      upsert: true,
+      cacheControl: "3600"
+    });
+    if (upErr) {
+      setUploadError(upErr.message || "Upload failed");
+      setUploading(false);
+      return;
+    }
+    const { data: pub } = db.storage.from("product-photos").getPublicUrl(path);
+    set("img", pub.publicUrl);
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
   return /*#__PURE__*/React.createElement(Modal, {
     open: open,
     onClose: onClose,
@@ -700,8 +726,62 @@ const ProductModal = ({
     value: form.description,
     onChange: e => set("description", e.target.value),
     placeholder: "Short product description\u2026"
-  }), /*#__PURE__*/React.createElement(Input, {
-    label: "Image URL",
+  }), /*#__PURE__*/React.createElement("label", {
+    style: {
+      display: "block",
+      fontSize: ".72rem",
+      letterSpacing: ".12em",
+      textTransform: "uppercase",
+      color: C.warmGray,
+      marginBottom: ".45rem"
+    }
+  }, "Photo"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: "1rem",
+      marginBottom: ".6rem"
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: form.img || `https://placehold.co/300x300/ede8de/8B6914?text=${encodeURIComponent((form.name || "?")[0])}`,
+    alt: "Product photo preview",
+    style: {
+      width: "80px",
+      height: "80px",
+      objectFit: "cover",
+      border: `1px solid ${C.border}`,
+      flexShrink: 0
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    ref: fileInputRef,
+    type: "file",
+    accept: "image/*",
+    onChange: handlePhotoFile,
+    style: {
+      display: "none"
+    },
+    id: "productPhotoFile"
+  }), /*#__PURE__*/React.createElement(Btn, {
+    variant: "ghost",
+    type: "button",
+    disabled: uploading,
+    onClick: () => fileInputRef.current && fileInputRef.current.click(),
+    style: {
+      padding: ".55rem 1rem",
+      fontSize: ".72rem"
+    }
+  }, uploading ? "Uploading\u2026" : "Upload Photo"), uploadError && /*#__PURE__*/React.createElement("div", {
+    style: {
+      color: "#dc2626",
+      fontSize: ".75rem",
+      marginTop: ".4rem"
+    }
+  }, uploadError))), /*#__PURE__*/React.createElement(Input, {
+    label: "Photo URL (auto-filled after upload, or paste your own link)",
     value: form.img,
     onChange: e => set("img", e.target.value),
     placeholder: "https://\u2026 or leave blank for placeholder"
