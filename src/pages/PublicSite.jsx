@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { supabase } from '../supabaseClient.js';
+import { articles } from '../data/articles.js';
 
 export default function PublicSite() {
   const [services, setServices] = useState([]);
@@ -19,6 +21,7 @@ export default function PublicSite() {
   const dateRef = useRef(null);
   const timeRef = useRef(null);
   const zoneRef = useRef(null);
+  const stylistIdRef = useRef(null);
   const addressRef = useRef(null);
   const notesRef = useRef(null);
   const bookSubmitBtnRef = useRef(null);
@@ -147,6 +150,8 @@ export default function PublicSite() {
     const service = services.find(s => s.id === serviceId);
     const zoneId = zoneRef.current.value || null;
     const zone = zones.find(z => z.id === zoneId);
+    const stylistId = stylistIdRef.current.value || null;
+    const preferredStylist = stylists.find(s => s.id === stylistId);
     const servicePrice = service ? service.price_naira : 0;
     const zoneFee = zone ? zone.fee_naira : 0;
 
@@ -158,6 +163,7 @@ export default function PublicSite() {
       appt_date: dateRef.current.value,
       appt_time: timeRef.current.value,
       zone_id: zoneId,
+      stylist_id: stylistId,
       address: addressRef.current.value,
       notes: notesRef.current.value,
       amount_naira: service ? servicePrice + zoneFee : null,
@@ -186,6 +192,7 @@ export default function PublicSite() {
       `Date: ${dateStr}\n` +
       `Time: ${payload.appt_time}\n` +
       `Area: ${zone ? zone.name : 'Not specified'}\n` +
+      `Preferred Stylist: ${preferredStylist ? preferredStylist.name : 'No preference'}\n` +
       `Address: ${payload.address || 'Not provided'}\n` +
       (payload.amount_naira ? `Estimated total: ₦${payload.amount_naira.toLocaleString()}\n` : '') +
       `\nPlease confirm my appointment. Thank you!`;
@@ -581,36 +588,20 @@ export default function PublicSite() {
         <h2 className="section-title">Learn &amp; Grow with Style NG</h2>
         <p className="section-sub">Expert tips, tutorials, and masterclasses to elevate your hair care knowledge and achieve salon results at home.</p>
         <div className="learn-grid">
-          <div className="learn-card reveal">
-            <img src="https://placehold.co/400x225/d8cebc/8B6914?text=Natural+Hair+Guide" alt="Natural Hair Guide" className="learn-img" />
-            <div className="learn-body">
-              <div className="learn-cat">Hair Care Guide</div>
-              <h3>The Ultimate Guide to Natural Hair Care in Lagos</h3>
-              <p>Essential tips for maintaining healthy, vibrant natural hair in Nigeria's unique climate.</p>
-              <a href="#" className="learn-link">Read Article →</a>
-            </div>
-          </div>
-          <div className="learn-card reveal">
-            <img src="https://placehold.co/400x225/d8cebc/8B6914?text=Silk+Press+Secrets" alt="Silk Press" className="learn-img" />
-            <div className="learn-body">
-              <div className="learn-cat">Stylist Secrets</div>
-              <h3>Achieve the Perfect Silk Press at Home</h3>
-              <p>Our step-by-step guide to getting a sleek, damage-free silk press from your living room.</p>
-              <a href="#" className="learn-link">Read Article →</a>
-            </div>
-          </div>
-          <div className="learn-card reveal">
-            <img src="https://placehold.co/400x225/d8cebc/8B6914?text=Masterclass" alt="Masterclass" className="learn-img" />
-            <div className="learn-body">
-              <div className="learn-cat">Masterclass</div>
-              <h3>Virtual Masterclass: Advanced Extension Techniques</h3>
-              <p>For aspiring and professional stylists — learn the latest in microlinks and tape-in application.</p>
-              <a href="#" className="learn-link">Enrol Now →</a>
-            </div>
-          </div>
+          {articles.map(a => (
+            <RouterLink to={`/learn/${a.slug}`} className="learn-card reveal" key={a.slug} style={{ textDecoration: 'none', display: 'block' }}>
+              <img src={a.image} alt={a.title} className="learn-img" />
+              <div className="learn-body">
+                <div className="learn-cat">{a.category}</div>
+                <h3>{a.title}</h3>
+                <p>{a.excerpt}</p>
+                <span className="learn-link">{a.cta.label}</span>
+              </div>
+            </RouterLink>
+          ))}
         </div>
         <div style={{textAlign: 'center', marginTop: '3rem'}}>
-          <a href="#" className="btn-primary">Explore All Resources</a>
+          <RouterLink to="/learn" className="btn-primary">Explore All Resources</RouterLink>
         </div>
       </div>
     </section>
@@ -694,6 +685,15 @@ export default function PublicSite() {
                     <option key={z.id} value={z.id}>{z.name} — +₦{z.fee_naira.toLocaleString()} travel fee</option>
                   ))}
                 </></select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="stylistPref">Preferred Stylist (optional)</label>
+              <select id="stylistPref" ref={stylistIdRef}>
+                <option value="">No preference — any available stylist</option>
+                {stylists.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}{s.role ? ` — ${s.role}` : ''}</option>
+                ))}
+              </select>
             </div>
             <div className="form-group">
               <label htmlFor="address">Full Address</label>
