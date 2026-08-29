@@ -39,7 +39,7 @@ export default function LearnIndex() {
       </section>
 
       <footer style={{ padding: '3rem 4rem', textAlign: 'center', color: 'var(--mid-gray)', fontSize: '.85rem' }}>
-        <Link to="/" style={{ color: 'var(--charcoal)' }}>← Back to Style NG</Link>
+        <Link to="/" style={{ color: 'var(--charcoal)' }}>Back to Style NG</Link>
       </footer>
     </div>
   );

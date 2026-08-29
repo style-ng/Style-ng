@@ -138,7 +138,7 @@ export default function PublicSite() {
     });
   };
 
-  // Booking form submit — saves a real appointment to the database
+  // Booking form submit  -  saves a real appointment to the database
   const handleSubmit = async (e) => {
     e.preventDefault();
     const btn = bookSubmitBtnRef.current;
@@ -274,7 +274,7 @@ export default function PublicSite() {
       <div className="hero-left">
         <div className="hero-eyebrow">Lagos Mobile Salon</div>
         <h1>Premium Hair,<br /><em>At Your Door.</em></h1>
-        <p>Style NG brings five-star salon expertise directly to your home. Professional stylists, premium products, and a seamless experience — anywhere in Lagos.</p>
+        <p>Style NG brings five-star salon expertise directly to your home. Professional stylists, premium products, and a seamless experience  -  anywhere in Lagos.</p>
         <div className="hero-actions">
           <a href="#book" className="btn-primary">Book a Session</a>
           <a href="#services" className="btn-ghost">
@@ -301,14 +301,14 @@ export default function PublicSite() {
       <div className="container">
         <div className="section-label">What We Offer</div>
         <h2 className="section-title">Our Signature Services</h2>
-        <p className="section-sub">Comprehensive professional hair care tailored to your unique needs — delivered to your doorstep across Lagos.</p>
+        <p className="section-sub">Comprehensive professional hair care tailored to your unique needs  -  delivered to your doorstep across Lagos.</p>
       </div>
       <div className="container">
         <div className="services-grid">
           <div className="service-card reveal">
             <div className="service-num">01</div>
             <h3>Precision Haircuts &amp; Styling</h3>
-            <p>Expert cuts for all hair types — from classic trims to modern restyles, blowouts and event updos.</p>
+            <p>Expert cuts for all hair types  -  from classic trims to modern restyles, blowouts and event updos.</p>
             <div className="service-tags">
               <span className="service-tag">Wash &amp; Cut</span>
               <span className="service-tag">Men's &amp; Kids'</span>
@@ -358,7 +358,7 @@ export default function PublicSite() {
           <div className="service-card reveal">
             <div className="service-num">06</div>
             <h3>Virtual Consultations &amp; Hair Coaching</h3>
-            <p>Personalized advice and expert guidance from the comfort of your home — online or in-person.</p>
+            <p>Personalized advice and expert guidance from the comfort of your home  -  online or in-person.</p>
             <div className="service-tags">
               <span className="service-tag">Regimen Planning</span>
               <span className="service-tag">DIY Tips</span>
@@ -379,7 +379,7 @@ export default function PublicSite() {
           <div className="step reveal">
             <div className="step-num">1</div>
             <h3>Choose Your Service</h3>
-            <p>Browse our full range of professional services and select what suits your hair goals — or pick from our product catalogue.</p>
+            <p>Browse our full range of professional services and select what suits your hair goals  -  or pick from our product catalogue.</p>
           </div>
           <div className="step reveal">
             <div className="step-num">2</div>
@@ -400,7 +400,7 @@ export default function PublicSite() {
       <div className="container">
         <div className="section-label">Our Team</div>
         <h2 className="section-title">Meet Our Expert Stylists</h2>
-        <p className="section-sub">Highly skilled, vetted, and passionate — our stylists bring the salon to you with professionalism and care.</p>
+        <p className="section-sub">Highly skilled, vetted, and passionate  -  our stylists bring the salon to you with professionalism and care.</p>
         <div className="stylists-grid" id="stylistsGrid">{stylistsLoading ? (
             <p style={{ color: '#7A7470' }}>Loading stylists…</p>
           ) : stylists.length === 0 ? (
@@ -424,13 +424,13 @@ export default function PublicSite() {
         <div className="book-left">
           <div className="section-label">For Stylists</div>
           <h2 className="section-title">Bring Your Chair to Style NG</h2>
-          <p>You bring the skill — we bring the bookings. Join a growing network of Lagos stylists getting discovered by real clients, every week.</p>
+          <p>You bring the skill  -  we bring the bookings. Join a growing network of Lagos stylists getting discovered by real clients, every week.</p>
           <div className="book-perks">
             <div className="perk">
               <div className="perk-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
               </div>
-              Free to join — no listing or monthly fees
+              Free to join  -  no listing or monthly fees
             </div>
             <div className="perk">
               <div className="perk-icon">
@@ -468,7 +468,7 @@ export default function PublicSite() {
             <div className="form-group">
               <label htmlFor="sspecialty">Specialty</label>
               <select id="sspecialty" ref={sspecialtyRef} required>
-                <option value="">— Select a Specialty —</option>
+                <option value=""> -  Select a Specialty  - </option>
                 <option>Natural Hair Care</option>
                 <option>Braids &amp; Locs</option>
                 <option>Hair Coloring</option>
@@ -482,7 +482,7 @@ export default function PublicSite() {
               <div className="form-group">
                 <label htmlFor="sexperience">Years of Experience</label>
                 <select id="sexperience" ref={sexperienceRef} required>
-                  <option value="">— Select —</option>
+                  <option value=""> -  Select  - </option>
                   <option>Less than 1 year</option>
                   <option>1–2 years</option>
                   <option>3–5 years</option>
@@ -612,7 +612,7 @@ export default function PublicSite() {
         <div className="book-left">
           <div className="section-label">Reserve Your Slot</div>
           <h2 className="section-title">Book Your Home Hair Appointment</h2>
-          <p>Fill in the form and we'll confirm your appointment within hours. Our stylist arrives fully equipped — no salon trip needed.</p>
+          <p>Fill in the form and we'll confirm your appointment within hours. Our stylist arrives fully equipped  -  no salon trip needed.</p>
           <div className="book-perks">
             <div className="perk">
               <div className="perk-icon">
@@ -630,7 +630,7 @@ export default function PublicSite() {
               <div className="perk-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               </div>
-              Flexible scheduling — 7 days a week
+              Flexible scheduling  -  7 days a week
             </div>
             <div className="perk">
               <div className="perk-icon">
@@ -660,9 +660,9 @@ export default function PublicSite() {
             <div className="form-group">
               <label htmlFor="service">Desired Service</label>
               <select id="service" ref={serviceRef} required onChange={updatePriceEstimate}><>
-                  <option value="">— Select a Service —</option>
+                  <option value=""> -  Select a Service  - </option>
                   {services.map(s => (
-                    <option key={s.id} value={s.id}>{s.name} — ₦{s.price_naira.toLocaleString()}</option>
+                    <option key={s.id} value={s.id}>{s.name}  -  ₦{s.price_naira.toLocaleString()}</option>
                   ))}
                   <option value="">Other (please specify in notes)</option>
                 </></select>
@@ -680,18 +680,18 @@ export default function PublicSite() {
             <div className="form-group">
               <label htmlFor="zone">Your Area (Lagos)</label>
               <select id="zone" ref={zoneRef} required onChange={updatePriceEstimate}><>
-                  <option value="">— Select Your Area —</option>
+                  <option value=""> -  Select Your Area  - </option>
                   {zones.map(z => (
-                    <option key={z.id} value={z.id}>{z.name} — +₦{z.fee_naira.toLocaleString()} travel fee</option>
+                    <option key={z.id} value={z.id}>{z.name}  -  +₦{z.fee_naira.toLocaleString()} travel fee</option>
                   ))}
                 </></select>
             </div>
             <div className="form-group">
               <label htmlFor="stylistPref">Preferred Stylist (optional)</label>
               <select id="stylistPref" ref={stylistIdRef}>
-                <option value="">No preference — any available stylist</option>
+                <option value="">No preference  -  any available stylist</option>
                 {stylists.map(s => (
-                  <option key={s.id} value={s.id}>{s.name}{s.role ? ` — ${s.role}` : ''}</option>
+                  <option key={s.id} value={s.id}>{s.name}{s.role ? `  -  ${s.role}` : ''}</option>
                 ))}
               </select>
             </div>

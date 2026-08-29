@@ -16,7 +16,7 @@ export default function Article() {
         <section style={{ paddingTop: '9rem', textAlign: 'center' }}>
           <div className="container">
             <h2 className="section-title">Article not found</h2>
-            <p className="section-sub"><Link to="/learn">← Back to Learn</Link></p>
+            <p className="section-sub"><Link to="/learn">Back to Learn</Link></p>
           </div>
         </section>
       </div>
@@ -38,7 +38,7 @@ export default function Article() {
 
       <section style={{ paddingTop: '9rem', paddingBottom: '2rem' }}>
         <div className="container" style={{ maxWidth: '760px' }}>
-          <Link to="/learn" style={{ fontSize: '.8rem', letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none' }}>← Back to Learn</Link>
+          <Link to="/learn" style={{ fontSize: '.8rem', letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none' }}>Back to Learn</Link>
           <div className="learn-cat" style={{ marginTop: '2rem' }}>{article.category} · {article.readTime}</div>
           <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 500, lineHeight: 1.1, margin: '.6rem 0 1.6rem' }}>{article.title}</h1>
           <img src={article.image} alt={article.title} style={{ width: '100%', borderRadius: '4px', marginBottom: '2.2rem' }} />
@@ -73,7 +73,7 @@ export default function Article() {
       </section>
 
       <footer style={{ padding: '3rem 4rem', textAlign: 'center', color: 'var(--mid-gray)', fontSize: '.85rem' }}>
-        <Link to="/learn" style={{ color: 'var(--charcoal)' }}>← More from Learn</Link>
+        <Link to="/learn" style={{ color: 'var(--charcoal)' }}>More from Learn</Link>
       </footer>
     </div>
   );
