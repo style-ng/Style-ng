@@ -1,80 +1,70 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { articles } from '../data/articles.js';
-import '../styles/site.css';
-
-export default function Article() {
-  const { slug } = useParams();
-  const article = articles.find(a => a.slug === slug);
-
-  if (!article) {
-    return (
-      <div className="public-site">
-        <nav id="nav">
-          <Link to="/" className="nav-logo">Style<span>.</span>NG</Link>
-        </nav>
-        <section style={{ paddingTop: '9rem', textAlign: 'center' }}>
-          <div className="container">
-            <h2 className="section-title">Article not found</h2>
-            <p className="section-sub"><Link to="/learn">← Back to Learn</Link></p>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
-  return (
-    <div className="public-site">
-      <nav id="nav">
-        <Link to="/" className="nav-logo">Style<span>.</span>NG</Link>
-        <div className="nav-links" id="navLinks">
-          <Link to="/">Home</Link>
-          <Link to="/#services">Services</Link>
-          <Link to="/#stylists">Stylists</Link>
-          <Link to="/learn">Learn</Link>
-          <Link to="/#book" className="nav-cta">Book Now</Link>
-        </div>
-      </nav>
-
-      <section style={{ paddingTop: '9rem', paddingBottom: '2rem' }}>
-        <div className="container" style={{ maxWidth: '760px' }}>
-          <Link to="/learn" style={{ fontSize: '.8rem', letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none' }}>← Back to Learn</Link>
-          <div className="learn-cat" style={{ marginTop: '2rem' }}>{article.category} · {article.readTime}</div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 500, lineHeight: 1.1, margin: '.6rem 0 1.6rem' }}>{article.title}</h1>
-          <img src={article.image} alt={article.title} style={{ width: '100%', borderRadius: '4px', marginBottom: '2.2rem' }} />
-          <div style={{ fontSize: '1.02rem', lineHeight: 1.75, color: 'var(--warm-gray)' }}>
-            {article.body.map((block, i) =>
-              block.type === 'h' ? (
-                <h3 key={i} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', fontWeight: 600, color: 'var(--charcoal)', marginTop: '2.2rem', marginBottom: '.8rem' }}>{block.text}</h3>
-              ) : (
-                <p key={i} style={{ marginBottom: '1.2rem' }}>{block.text}</p>
-              )
-            )}
-          </div>
-
-          <div style={{ marginTop: '3rem', padding: '2rem', background: 'var(--charcoal)', color: 'var(--cream)', borderRadius: '4px', textAlign: 'center' }}>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, fontSize: '1.4rem', marginBottom: '.8rem' }}>
-              {article.isMasterclass ? 'Ready to enrol?' : 'Prefer to leave it to the professionals?'}
-            </h3>
-            <p style={{ color: '#C9C2B4', marginBottom: '1.4rem', fontSize: '.92rem' }}>
-              {article.isMasterclass
-                ? 'Reach out on WhatsApp for the next available date and pricing.'
-                : 'Book a Style NG stylist and get salon results without leaving home.'}
-            </p>
-            <a
-              href={article.isMasterclass ? 'https://wa.me/2347066301079?text=' + encodeURIComponent("Hi Style NG! I'd like to enrol in the Advanced Extension Techniques masterclass.") : '/#book'}
-              className="btn-primary"
-              style={{ display: 'inline-block' }}
-            >
-              {article.isMasterclass ? 'WhatsApp to Enrol' : 'Book Now'}
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <footer style={{ padding: '3rem 4rem', textAlign: 'center', color: 'var(--mid-gray)', fontSize: '.85rem' }}>
-        <Link to="/learn" style={{ color: 'var(--charcoal)' }}>← More from Learn</Link>
-      </footer>
-    </div>
-  );
-}
+export const articles = [
+  {
+    slug: 'natural-hair-guide',
+    category: 'Hair Care Guide',
+    title: 'The Ultimate Guide to Natural Hair Care in Lagos',
+    excerpt: "Essential tips for maintaining healthy, vibrant natural hair in Nigeria's unique climate.",
+    image: 'https://placehold.co/900/d8cebc/8B6914?text=Natural+Hair+Guide',
+    readTime: '6 min read',
+    cta: { label: 'Read Article ->' },
+    body: [
+      { type: 'p', text: "Lagos is not kind to natural hair  -  and that's not a complaint, it's just physics. Between the coastal humidity, the harmattan dust that rolls in every dry season, and the hard water running through most taps, your hair is dealing with a lot before you've even picked up a comb. The good news: once you understand what the climate is actually doing to your strands, the fixes are simple." },
+      { type: 'h', text: '1. Humidity is not your enemy  -  dehydration is' },
+      { type: 'p', text: "Most people blame Lagos humidity for frizz and shrinkage, but the real issue is usually the opposite: hair that's actually thirsty for consistent moisture, not just water in the air. Humid air causes frizz mainly when the hair's cuticle is already rough or under-moisturized, so it grabs at ambient water unevenly. The fix is a proper moisture-sealing routine, not fighting the weather." },
+      { type: 'h', text: '2. Build a wash-day routine that respects hard water' },
+      { type: 'p', text: 'Lagos tap water tends to be harder than what many hair products are formulated for, which can leave mineral buildup on the hair shaft over time  -  this shows up as dullness, dryness that won\'t budge no matter how much you moisturize, and product that just won\'t lather properly. A monthly clarifying wash (a chelating shampoo, or even a diluted apple cider vinegar rinse) resets the hair so your regular products can actually do their job.' },
+      { type: 'h', text: '3. The LOC (or LCO) method, adapted for our climate' },
+      { type: 'p', text: 'Liquid, Oil, Cream  -  or Liquid, Cream, Oil, depending on your hair\'s porosity  -  remains one of the most reliable moisture-sealing routines anywhere, but in Lagos specifically, lean slightly heavier on the sealing oil step during harmattan season (roughly November to February) when the air itself is drier, and lighter on it during the rainy season when ambient humidity does some of the sealing work for you.' },
+      { type: 'h', text: '4. Protective styling that actually protects' },
+      { type: 'p', text: "Braids, twists, and wigs are popular here for good reason  -  they cut down on daily manipulation, which is the single biggest cause of breakage. But protective styles only protect if the hair underneath is properly moisturized before installation and not left in for too long. As a general rule, 6-8 weeks is a sensible upper limit for most protective styles before your scalp and edges need a proper break." },
+      { type: 'h', text: '5. Don\'t skip the scalp' },
+      { type: 'p', text: 'Heat, sweat, and product buildup all show up on the scalp before they show up in the strands. A light scalp massage with a lightweight oil (jojoba and grapeseed both work well in our climate since they don\'t sit heavy) once or twice a week keeps circulation up and buildup down.' },
+      { type: 'p', text: "If you'd rather have a professional handle wash day, deep conditioning, and protective styling for you, that's exactly what Style NG stylists specialise in  -  trained specifically for the demands of natural hair in this climate, not a generic routine copied from somewhere with completely different weather." },
+    ],
+  },
+  {
+    slug: 'silk-press-secrets',
+    category: 'Stylist Secrets',
+    title: 'Achieve the Perfect Silk Press at Home',
+    excerpt: 'Our step-by-step guide to getting a sleek, damage-free silk press from your living room.',
+    image: 'https://placehold.co/900/d8cebc/8B6914?text=Silk+Press+Secrets',
+    readTime: '7 min read',
+    cta: { label: 'Read Article ->' },
+    body: [
+      { type: 'p', text: "A silk press done right should last you a full week or two of sleek, bouncy movement without a single split end to show for it. A silk press done wrong shows up fast  -  as breakage, reversion by day two, or hair that just never quite gets straight no matter how many times you go over it. The difference almost always comes down to prep, not the flat iron." },
+      { type: 'h', text: 'Step 1: Start from a genuinely clean base' },
+      { type: 'p', text: 'Any product buildup left on the hair before heat styling will effectively fry onto the strand once the flat iron touches it. Use a clarifying shampoo, followed by a moisture-rich (not just protein-rich) conditioner  -  silk presses need hair that\'s soft and pliable, not stiff.' },
+      { type: 'h', text: 'Step 2: Deep condition like it\'s the most important step  -  because it is' },
+      { type: 'p', text: 'This is where damage prevention actually happens. A good 20-30 minutes under heat (a steamer or a warm towel works if you don\'t have a hooded dryer) with a moisturizing deep conditioner gives the hair the elasticity it needs to survive the flat iron without snapping.' },
+      { type: 'h', text: 'Step 3: Stretch the hair before you ever pick up a flat iron' },
+      { type: 'p', text: "Blow-drying on a low-medium heat setting with a comb attachment, in small sections, does the bulk of the straightening work before the flat iron ever touches the hair  -  which means the flat iron needs far fewer passes to finish the job. Fewer passes means less heat damage." },
+      { type: 'h', text: 'Step 4: Heat protectant is non-negotiable' },
+      { type: 'p', text: "Apply a heat protectant to each section right before flat ironing, not just once at the start on wet hair. And keep the iron itself between 350-380°F (roughly 175-195°C) for most natural hair textures  -  hotter isn't faster, it's just more damage for the same result." },
+      { type: 'h', text: 'Step 5: One smooth pass beats five rushed ones' },
+      { type: 'p', text: 'Small sections (about an inch wide), medium tension, one slow and steady pass. If a section isn\'t fully straight, let it cool completely and go over it once more rather than immediately re-passing hot hair  -  reheating already-hot hair is where most silk press damage actually happens.' },
+      { type: 'h', text: 'Step 6: Protect it at night' },
+      { type: 'p', text: 'A silk or satin bonnet (or pillowcase) and wrapping the hair down before bed is what actually gets you a week or two out of one press, rather than reverting by the second day  -  especially important in Lagos humidity.' },
+      { type: 'p', text: "If your schedule doesn't allow the full 2-3 hour process, that's exactly what booking a Style NG stylist is for  -  professional silk presses done with proper tools and technique, at your own home." },
+    ],
+  },
+  {
+    slug: 'masterclass-extensions',
+    category: 'Masterclass',
+    title: 'Virtual Masterclass: Advanced Extension Techniques',
+    excerpt: 'For aspiring and professional stylists  -  learn the latest in microlinks and tape-in application.',
+    image: 'https://placehold.co/900/d8cebc/8B6914?text=Masterclass',
+    readTime: 'Masterclass overview',
+    cta: { label: 'Enrol Now ->' },
+    isMasterclass: true,
+    body: [
+      { type: 'p', text: "This masterclass is built for stylists who already have a foundation in extension work and want to move into the higher-precision, higher-retention techniques that clients are increasingly asking for  -  microlinks and tape-ins, done the way that keeps hair (and repeat bookings) healthy." },
+      { type: 'h', text: "What's covered" },
+      { type: 'p', text: 'Microlink sectioning and tension control (avoiding the traction damage that gives extensions a bad reputation), tape-in placement and re-application timing, matching extension texture and density to natural hair for a seamless blend, and client consultation  -  how to set realistic expectations around maintenance and lifespan before you ever pick up a tool.' },
+      { type: 'h', text: 'Who this is for' },
+      { type: 'p', text: "Working stylists who currently offer sew-ins or basic extension services and want to add microlinks and tape-ins to their menu, as well as stylists newer to extensions who want a structured foundation rather than picking up technique piecemeal from videos." },
+      { type: 'h', text: 'Format' },
+      { type: 'p', text: 'A live virtual session with real-time Q&A, followed by supplementary technique videos you can revisit. Spots are intentionally kept small so questions actually get answered.' },
+      { type: 'p', text: "Interested in enrolling, or want to know the next available date? Reach out on WhatsApp and the Style NG team will get you the details and pricing directly." },
+    ],
+  },
+];
