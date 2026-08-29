@@ -395,6 +395,64 @@
     @media(max-width:700px) {
       .public-site .steps { grid-template-columns: 1fr; gap: 2.5rem; }
       .public-site .steps::before { display: none; }
+      .public-site .how-grid { grid-template-columns: 1fr !important; }
+    }
+
+    /* Phone mockup for How It Works */
+    .public-site .phone-mock {
+      max-width: 340px;
+      margin: 0 auto;
+      background: var(--charcoal);
+      border-radius: 32px;
+      padding: 14px;
+      box-shadow: 0 40px 80px -20px rgba(26,24,20,0.4);
+    }
+    .public-site .phone-notch {
+      width: 80px; height: 18px;
+      background: var(--charcoal);
+      border-radius: 0 0 12px 12px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .public-site .phone-screen {
+      background: var(--cream);
+      border-radius: 22px;
+      padding: 1.3rem 1.1rem;
+      margin-top: -18px;
+    }
+    .public-site .phone-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+    }
+    .public-site .phone-card-label {
+      font-size: .62rem; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--mid-gray); margin-bottom: .3rem;
+    }
+    .public-site .phone-card-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .82rem; color: var(--charcoal); margin-bottom: .3rem;
+    }
+    .public-site .phone-gold { color: var(--gold-dark); font-weight: 600; }
+    .public-site .phone-total {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: .9rem; padding-top: .8rem; border-top: 1px dashed var(--border);
+      font-size: .85rem; font-weight: 600; color: var(--charcoal);
+    }
+    .public-site .phone-wa {
+      margin-top: 1rem;
+      background: #E7F5EE;
+      border-radius: 8px;
+      padding: .9rem 1rem;
+    }
+    .public-site .phone-wa-head {
+      font-size: .68rem; font-weight: 600; color: #1F5C55; margin-bottom: .4rem;
+    }
+    .public-site .phone-wa-bubble {
+      background: #fff; border-radius: 6px; padding: .6rem .75rem;
+      font-size: .74rem; line-height: 1.5; color: var(--warm-gray);
     }
 
     /* ── STYLISTS ─────────────────────────── */
@@ -556,12 +614,13 @@
       gap: 2rem;
     }
     .public-site .learn-card {
-      background: var(--cream);
+      background: #fff;
       border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(26,24,20,.05);
       overflow: hidden;
-      transition: transform .3s;
+      transition: transform .3s, box-shadow .3s;
     }
-    .public-site .learn-card:hover { transform: translateY(-4px); }
+    .public-site .learn-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.08); }
     .public-site .learn-img {
       width: 100%;
       aspect-ratio: 16/9;
