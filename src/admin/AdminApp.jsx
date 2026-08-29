@@ -1098,7 +1098,7 @@ const StatCard = ({
   }
 }, sub));
 
-// ── Data mapping helpers (DB rows → UI shape) ───────────────────────
+// ── Data mapping helpers (DB rows -> UI shape) ───────────────────────
 const mapAppt = row => ({
   id: row.id,
   client: row.client_name,
@@ -1789,7 +1789,7 @@ function Dashboard() {
       color: C.warmGray,
       paddingRight: "1rem"
     }
-  }, a.service || "—"), /*#__PURE__*/React.createElement("div", {
+  }, a.service || " - "), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: ".85rem",
       color: C.warmGray
