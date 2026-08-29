@@ -372,24 +372,46 @@ export default function PublicSite() {
 
     <section id="how">
       <div className="container">
-        <div className="section-label">Simple Process</div>
-        <h2 className="section-title">How It Works</h2>
-        <p className="section-sub">Getting salon-quality hair care at home has never been easier. Three steps to your best hair day.</p>
-        <div className="steps">
-          <div className="step reveal">
-            <div className="step-num">1</div>
-            <h3>Choose Your Service</h3>
-            <p>Browse our full range of professional services and select what suits your hair goals  -  or pick from our product catalogue.</p>
+        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center'}} className="how-grid">
+          <div>
+            <div className="section-label">Simple Process</div>
+            <h2 className="section-title">How It Works</h2>
+            <p className="section-sub">Getting salon-quality hair care at home has never been easier. Three steps to your best hair day.</p>
+            <div className="steps">
+              <div className="step reveal">
+                <div className="step-num">1</div>
+                <h3>Choose Your Service</h3>
+                <p>Browse our full range of professional services and see real-time pricing, including your area's travel fee, before you book.</p>
+              </div>
+              <div className="step reveal">
+                <div className="step-num">2</div>
+                <h3>Schedule &amp; Confirm</h3>
+                <p>Pick a convenient date and time. We confirm your appointment directly over WhatsApp, no waiting on hold.</p>
+              </div>
+              <div className="step reveal">
+                <div className="step-num">3</div>
+                <h3>Relax &amp; Enjoy</h3>
+                <p>Our certified stylist arrives at your home with all equipment. Sit back and enjoy your transformation.</p>
+              </div>
+            </div>
           </div>
-          <div className="step reveal">
-            <div className="step-num">2</div>
-            <h3>Schedule &amp; Confirm</h3>
-            <p>Pick a convenient date and time using our easy booking form. We confirm within hours and send a reminder.</p>
-          </div>
-          <div className="step reveal">
-            <div className="step-num">3</div>
-            <h3>Relax &amp; Enjoy</h3>
-            <p>Our certified stylist arrives at your home with all equipment. Sit back and enjoy your transformation.</p>
+          <div className="reveal">
+            <div className="phone-mock">
+              <div className="phone-notch"></div>
+              <div className="phone-screen">
+                <div className="phone-card">
+                  <div className="phone-card-label">Desired Service</div>
+                  <div className="phone-card-row"><span>Natural Hair Care &amp; Styling</span><span className="phone-gold">&#8358;15,000</span></div>
+                  <div className="phone-card-label" style={{marginTop: '.9rem'}}>Your Area</div>
+                  <div className="phone-card-row"><span>Lekki / VI / Ikoyi</span><span className="phone-gold">+&#8358;5,000</span></div>
+                  <div className="phone-total"><span>Estimated Total</span><span>&#8358;20,000</span></div>
+                </div>
+                <div className="phone-wa">
+                  <div className="phone-wa-head">Style NG &middot; WhatsApp</div>
+                  <div className="phone-wa-bubble">Hi! I just booked an appointment on your website. Please confirm my appointment. Thank you!</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
