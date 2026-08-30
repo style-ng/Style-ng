@@ -143,8 +143,6 @@ export default function PublicSite() {
     e.preventDefault();
     const btn = bookSubmitBtnRef.current;
     const originalText = btn.textContent;
-    btn.textContent = 'Sending…';
-    btn.disabled = true;
 
     const serviceId = serviceRef.current.value || null;
     const service = services.find(s => s.id === serviceId);
@@ -154,6 +152,15 @@ export default function PublicSite() {
     const preferredStylist = stylists.find(s => s.id === stylistId);
     const servicePrice = service ? service.price_naira : 0;
     const zoneFee = zone ? zone.fee_naira : 0;
+    const totalNaira = service ? servicePrice + zoneFee : 0;
+
+    if (!totalNaira) {
+      showToast('Please select a service before booking.');
+      return;
+    }
+
+    const depositNaira = Math.round(totalNaira / 2);
+    const balanceNaira = totalNaira - depositNaira;
 
     const payload = {
       client_name: fnameRef.current.value,
@@ -166,41 +173,91 @@ export default function PublicSite() {
       stylist_id: stylistId,
       address: addressRef.current.value,
       notes: notesRef.current.value,
-      amount_naira: service ? servicePrice + zoneFee : null,
+      amount_naira: totalNaira,
+      deposit_amount_naira: depositNaira,
+      balance_amount_naira: balanceNaira,
       status: 'pending',
     };
 
-    const { error } = await supabase.from('appointments').insert(payload);
-
-    btn.textContent = originalText;
-    btn.disabled = false;
-
-    if (error) {
-      console.error(error);
-      showToast('⚠ Something went wrong. Please try again or WhatsApp us.');
+    if (!window.PaystackPop) {
+      showToast('⚠ Payment system is still loading  -  please try again in a moment.');
       return;
     }
 
-    showToast('✓ Appointment request sent! Opening WhatsApp to confirm…');
+    btn.textContent = 'Opening payment…';
+    btn.disabled = true;
 
-    const dateStr = payload.appt_date
-      ? new Date(payload.appt_date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
-      : '';
-    const waMessage = `Hi Style NG! I just booked an appointment on your website:\n\n` +
-      `Name: ${payload.client_name}\n` +
-      `Service: ${service ? service.name : 'Not specified'}\n` +
-      `Date: ${dateStr}\n` +
-      `Time: ${payload.appt_time}\n` +
-      `Area: ${zone ? zone.name : 'Not specified'}\n` +
-      `Preferred Stylist: ${preferredStylist ? preferredStylist.name : 'No preference'}\n` +
-      `Address: ${payload.address || 'Not provided'}\n` +
-      (payload.amount_naira ? `Estimated total: ₦${payload.amount_naira.toLocaleString()}\n` : '') +
-      `\nPlease confirm my appointment. Thank you!`;
-    const waUrl = `https://wa.me/2347066301079?text=${encodeURIComponent(waMessage)}`;
+    const finishBooking = async (reference) => {
+      try {
+        const res = await fetch('/api/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reference, appointment: payload }),
+        });
+        const result = await res.json();
 
-    e.target.reset();
-    setPriceEstimate({ visible: false, serviceLine: '', zoneLine: '', totalLine: '' });
-    setTimeout(() => { window.open(waUrl, '_blank'); }, 900);
+        btn.textContent = originalText;
+        btn.disabled = false;
+
+        if (!res.ok || !result.success) {
+          console.error(result);
+          showToast('⚠ ' + (result.error || 'Payment verification failed. Please contact us.'));
+          return;
+        }
+
+        showToast('✓ Deposit paid! Opening WhatsApp to confirm…');
+
+        const dateStr = payload.appt_date
+          ? new Date(payload.appt_date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+          : '';
+        const waMessage = `Hi Style NG! I just booked and paid a deposit on your website:\n\n` +
+          `Name: ${payload.client_name}\n` +
+          `Service: ${service ? service.name : 'Not specified'}\n` +
+          `Date: ${dateStr}\n` +
+          `Time: ${payload.appt_time}\n` +
+          `Area: ${zone ? zone.name : 'Not specified'}\n` +
+          `Preferred Stylist: ${preferredStylist ? preferredStylist.name : 'No preference'}\n` +
+          `Address: ${payload.address || 'Not provided'}\n` +
+          `Total: NGN ${totalNaira.toLocaleString()}\n` +
+          `Deposit paid: NGN ${depositNaira.toLocaleString()}\n` +
+          `Balance due on arrival: NGN ${balanceNaira.toLocaleString()}\n` +
+          `Payment reference: ${reference}\n` +
+          `\nPlease confirm my appointment. Thank you!`;
+        const waUrl = `https://wa.me/2347066301079?text=${encodeURIComponent(waMessage)}`;
+
+        e.target.reset();
+        setPriceEstimate({ visible: false, serviceLine: '', zoneLine: '', totalLine: '' });
+        setTimeout(() => { window.open(waUrl, '_blank'); }, 900);
+      } catch (err) {
+        console.error(err);
+        btn.textContent = originalText;
+        btn.disabled = false;
+        showToast('⚠ Something went wrong confirming your payment. Please contact us.');
+      }
+    };
+
+    const paystackHandler = window.PaystackPop.setup({
+      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+      email: payload.email || 'client@styleng.example',
+      amount: Math.round(depositNaira * 100), // kobo
+      currency: 'NGN',
+      ref: 'STYLENG-' + Date.now() + '-' + Math.floor(Math.random() * 100000),
+      metadata: {
+        custom_fields: [
+          { display_name: 'Client Name', variable_name: 'client_name', value: payload.client_name },
+          { display_name: 'Service', variable_name: 'service', value: service ? service.name : '' },
+        ],
+      },
+      callback: function (response) {
+        finishBooking(response.reference);
+      },
+      onClose: function () {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        showToast('Payment window closed. No charge was made.');
+      },
+    });
+    paystackHandler.openIframe();
   };
 
   // Stylist application form submit
