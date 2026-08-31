@@ -38,7 +38,7 @@ export default function PublicSite() {
 
   const showToast = (msg, waLink = null) => {
     setToast({ visible: true, msg, waLink });
-    setTimeout(() => setToast({ visible: false, msg: '', waLink: null }), waLink ? 12000 : 3500);
+    setTimeout(() => setToast({ visible: false, msg: '', waLink: null }), waLink ? 60000 : 3500);
   };
 
   const addToCart = (name) => showToast(`✓ ${name} added to cart`);
@@ -188,10 +188,6 @@ export default function PublicSite() {
     btn.disabled = true;
 
     const finishBooking = async (reference) => {
-      // Open the window immediately (synchronously), before any async work  - 
-      // browsers block window.open() calls that happen after a delay/await,
-      // so we pre-open a blank tab now and set its destination once ready.
-      const waWindow = window.open('', '_blank');
       try {
         const res = await fetch('/api/verify-payment', {
           method: 'POST',
@@ -205,7 +201,6 @@ export default function PublicSite() {
 
         if (!res.ok || !result.success) {
           console.error(result);
-          if (waWindow) waWindow.close();
           showToast('⚠ ' + (result.error || 'Payment verification failed. Please contact us.'));
           return;
         }
@@ -231,16 +226,13 @@ export default function PublicSite() {
         e.target.reset();
         setPriceEstimate({ visible: false, serviceLine: '', zoneLine: '', totalLine: '' });
 
-        if (waWindow) {
-          waWindow.location.href = waUrl;
-          showToast('✓ Deposit paid! Opening WhatsApp to confirm...');
-        } else {
-          // The pre-opened window was blocked too  -  give the person a manual link instead.
-          showToast('✓ Deposit paid! Your browser blocked the WhatsApp popup.', waUrl);
-        }
+        // Browsers block window.open() calls triggered from payment SDK
+        // callbacks (they aren't treated as a direct click), so instead of
+        // fighting that, we show a real link the person taps themselves -
+        // that always works since it's a genuine user click.
+        showToast('✓ Deposit paid successfully! Tap below to confirm your appointment.', waUrl);
       } catch (err) {
         console.error(err);
-        if (waWindow) waWindow.close();
         btn.textContent = originalText;
         btn.disabled = false;
         showToast('⚠ Something went wrong confirming your payment. Please contact us.');
@@ -877,9 +869,23 @@ export default function PublicSite() {
     <div id="toast" className={toast.visible ? 'show' : ''}>
       {toast.msg}
       {toast.waLink && (
-        <div style={{ marginTop: '.5rem' }}>
-          <a href={toast.waLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-light)', textDecoration: 'underline', fontWeight: 600 }}>
-            Tap here to open WhatsApp
+        <div style={{ marginTop: '.7rem' }}>
+          <a
+            href={toast.waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-block',
+              background: 'var(--gold)',
+              color: 'var(--charcoal)',
+              padding: '.6rem 1.2rem',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              fontWeight: 700,
+              fontSize: '.85rem',
+            }}
+          >
+            Confirm via WhatsApp
           </a>
         </div>
       )}
