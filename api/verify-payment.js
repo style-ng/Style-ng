@@ -34,11 +34,15 @@ export default async function handler(req, res) {
     const paidKobo = paystackData.data.amount; // amount actually paid, in kobo
     const expectedKobo = Math.round(Number(appointment.deposit_amount_naira) * 100);
 
-    if (paidKobo !== expectedKobo) {
-      return res.status(402).json({ error: 'Paid amount does not match expected deposit' });
+    // Paystack may add its own transaction fee on top of the requested amount
+    // (depending on account settings), so the paid amount can legitimately be
+    // slightly higher than what we asked for. Only reject if they paid LESS
+    // than expected.
+    if (paidKobo < expectedKobo) {
+      return res.status(402).json({ error: 'Paid amount is less than the expected deposit' });
     }
 
-    // 2. Payment is genuinely confirmed  -  now save the appointment.
+    // 2. Payment is genuinely confirmed - now save the appointment.
     //    Uses the service-role key so this write is trusted, bypassing the
     //    public anon-key restrictions the browser would normally have.
     const supabaseAdmin = createClient(
