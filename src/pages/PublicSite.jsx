@@ -11,7 +11,7 @@ export default function PublicSite() {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const [priceEstimate, setPriceEstimate] = useState({ visible: false, serviceLine: '', zoneLine: '', totalLine: '' });
-  const [toast, setToast] = useState({ visible: false, msg: '' });
+  const [toast, setToast] = useState({ visible: false, msg: '', waLink: null });
 
   // Booking form refs
   const fnameRef = useRef(null);
@@ -36,9 +36,9 @@ export default function PublicSite() {
   const snotesRef = useRef(null);
   const stylistSubmitBtnRef = useRef(null);
 
-  const showToast = (msg) => {
-    setToast({ visible: true, msg });
-    setTimeout(() => setToast({ visible: false, msg: '' }), 3500);
+  const showToast = (msg, waLink = null) => {
+    setToast({ visible: true, msg, waLink });
+    setTimeout(() => setToast({ visible: false, msg: '', waLink: null }), waLink ? 12000 : 3500);
   };
 
   const addToCart = (name) => showToast(`✓ ${name} added to cart`);
@@ -184,10 +184,14 @@ export default function PublicSite() {
       return;
     }
 
-    btn.textContent = 'Opening payment…';
+    btn.textContent = 'Opening payment...';
     btn.disabled = true;
 
     const finishBooking = async (reference) => {
+      // Open the window immediately (synchronously), before any async work  - 
+      // browsers block window.open() calls that happen after a delay/await,
+      // so we pre-open a blank tab now and set its destination once ready.
+      const waWindow = window.open('', '_blank');
       try {
         const res = await fetch('/api/verify-payment', {
           method: 'POST',
@@ -201,11 +205,10 @@ export default function PublicSite() {
 
         if (!res.ok || !result.success) {
           console.error(result);
+          if (waWindow) waWindow.close();
           showToast('⚠ ' + (result.error || 'Payment verification failed. Please contact us.'));
           return;
         }
-
-        showToast('✓ Deposit paid! Opening WhatsApp to confirm…');
 
         const dateStr = payload.appt_date
           ? new Date(payload.appt_date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -227,9 +230,17 @@ export default function PublicSite() {
 
         e.target.reset();
         setPriceEstimate({ visible: false, serviceLine: '', zoneLine: '', totalLine: '' });
-        setTimeout(() => { window.open(waUrl, '_blank'); }, 900);
+
+        if (waWindow) {
+          waWindow.location.href = waUrl;
+          showToast('✓ Deposit paid! Opening WhatsApp to confirm...');
+        } else {
+          // The pre-opened window was blocked too  -  give the person a manual link instead.
+          showToast('✓ Deposit paid! Your browser blocked the WhatsApp popup.', waUrl);
+        }
       } catch (err) {
         console.error(err);
+        if (waWindow) waWindow.close();
         btn.textContent = originalText;
         btn.disabled = false;
         showToast('⚠ Something went wrong confirming your payment. Please contact us.');
@@ -265,7 +276,7 @@ export default function PublicSite() {
     e.preventDefault();
     const btn = stylistSubmitBtnRef.current;
     const originalText = btn.textContent;
-    btn.textContent = 'Sending…';
+    btn.textContent = 'Sending...';
     btn.disabled = true;
 
     const payload = {
@@ -290,7 +301,7 @@ export default function PublicSite() {
       return;
     }
 
-    showToast('✓ Application sent! Opening WhatsApp to follow up…');
+    showToast('✓ Application sent! Opening WhatsApp to follow up...');
 
     const waMessage = `Hi Style NG! I'd like to apply as a stylist:\n\n` +
       `Name: ${payload.full_name}\n` +
@@ -481,7 +492,7 @@ export default function PublicSite() {
         <h2 className="section-title">Meet Our Expert Stylists</h2>
         <p className="section-sub">Highly skilled, vetted, and passionate  -  our stylists bring the salon to you with professionalism and care.</p>
         <div className="stylists-grid" id="stylistsGrid">{stylistsLoading ? (
-            <p style={{ color: '#7A7470' }}>Loading stylists…</p>
+            <p style={{ color: '#7A7470' }}>Loading stylists...</p>
           ) : stylists.length === 0 ? (
             <p style={{ color: '#7A7470' }}>No stylists available right now.</p>
           ) : stylists.map(s => (
@@ -580,7 +591,7 @@ export default function PublicSite() {
             </div>
             <div className="form-group">
               <label htmlFor="snotes">Anything Else? (optional)</label>
-              <textarea id="snotes" ref={snotesRef} placeholder="Certifications, availability, or anything you'd like us to know…"></textarea>
+              <textarea id="snotes" ref={snotesRef} placeholder="Certifications, availability, or anything you'd like us to know..."></textarea>
             </div>
             <button type="submit" className="btn-submit" ref={stylistSubmitBtnRef}>Submit Application</button>
           </form>
@@ -595,7 +606,7 @@ export default function PublicSite() {
         <h2 className="section-title">Premium Hair Products</h2>
         <p className="section-sub">Salon-grade products curated by our stylists and delivered right to your door across Lagos.</p>
         <div className="products-grid" id="productsGrid">{productsLoading ? (
-            <p style={{ color: '#7A7470' }}>Loading products…</p>
+            <p style={{ color: '#7A7470' }}>Loading products...</p>
           ) : products.length === 0 ? (
             <p style={{ color: '#7A7470' }}>No products available right now.</p>
           ) : products.map(p => (
@@ -787,7 +798,7 @@ export default function PublicSite() {
             )}
             <div className="form-group">
               <label htmlFor="notes">Additional Notes (optional)</label>
-              <textarea id="notes" ref={notesRef} placeholder="Any specific requests, hair concerns, or details…"></textarea>
+              <textarea id="notes" ref={notesRef} placeholder="Any specific requests, hair concerns, or details..."></textarea>
             </div>
             <button type="submit" className="btn-submit" ref={bookSubmitBtnRef}>Request Appointment</button>
           </form>
@@ -863,7 +874,16 @@ export default function PublicSite() {
     </footer>
 
 
-    <div id="toast" className={toast.visible ? 'show' : ''}>{toast.msg}</div>
+    <div id="toast" className={toast.visible ? 'show' : ''}>
+      {toast.msg}
+      {toast.waLink && (
+        <div style={{ marginTop: '.5rem' }}>
+          <a href={toast.waLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gold-light)', textDecoration: 'underline', fontWeight: 600 }}>
+            Tap here to open WhatsApp
+          </a>
+        </div>
+      )}
+    </div>
 
 
     </div>
